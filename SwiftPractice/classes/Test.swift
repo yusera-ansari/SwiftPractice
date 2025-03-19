@@ -5,10 +5,7 @@
 //  Created by yusera-ansari on 19/03/25.
 //
 
-protocol Testable{
-    static func appendTests()
-    static func runTests()
-}
+
 class Test{
     typealias test = () ->()
     static var tests = [test]()
