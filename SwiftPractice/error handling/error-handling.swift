@@ -15,6 +15,7 @@ func divide(_ num:Int, by divisor:Int) throws ->Int {
     
     if(divisor==0){
         print("throwing dividedbyzero error....")
+         
         throw DivisionError.dividedBYZero
     }
     print("Quotient is: \(num/divisor)")
