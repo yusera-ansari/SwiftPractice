@@ -194,6 +194,27 @@ enum Result{
         
     }
 }
+
+enum Shape{
+    /*
+     Enum with Multiple Cases and Associated Values:
+
+     Define an enum Shape with cases:
+     circle(radius: Double)
+     rectangle(width: Double, height: Double)
+     Write a function that calculates the area of a Shape using a switch statement.
+     */
+    
+    case circle(radius:Double), rectangle(width:Double, height:Double)
+    func calculateArea(){
+        switch self{
+        case .circle(let radius):
+            print("Area of the circle is \(3.14 * (radius * radius))")
+        case .rectangle(let width,let height):
+            print("ARea of the rectangle is \(width * height)")
+        }
+    }
+}
 class Enumeration:Test, Testable{
     static func appendTests() {
         tests.append(test1)
@@ -203,6 +224,7 @@ class Enumeration:Test, Testable{
         tests.append(test5)
         tests.append(test6)
         tests.append(test7)
+        tests.append(test8)
     }
     
     static func runTests() {
@@ -247,5 +269,10 @@ class Enumeration:Test, Testable{
                               Result.failure(error: "invalid input"),
                               Result.success(value: "success: user created"),
                               Result.failure(error: "Failure: Invalid id")])
+    }
+    
+    static func test8(){
+        Shape.circle(radius: 2).calculateArea();
+        Shape.rectangle(width: 2, height: 5).calculateArea()
     }
 }
