@@ -147,6 +147,53 @@ enum  Vehicle{
     }
 }
 
+
+// test6
+enum APIResponse{
+    /*
+     Enum with Optionals:
+
+     Create an enum APIResponse with two cases: success(data: Data) and failure(error: String).
+     Write a function that takes an APIResponse and prints a message based on whether it was a success or failure.
+     */
+    
+    case success(data:Data), failure(error:String)
+    
+}
+struct Data{
+    var response:String = "{message:\"ok\"}"
+}
+func result(response:APIResponse){
+    switch response{
+    case .success(let data):
+        print("API request success: \(data.response)")
+    case .failure(let error):
+        print("API request failed: \(error)");
+    }
+}
+
+//Pattern Matching
+//test7
+enum Result{
+    /* Enum and Pattern Matching:
+     
+     Create an enum Result with associated values success(value: String) and failure(error: String).
+     Use pattern matching to handle a list of Result values and print the results of each case.*/
+    
+    case success(value:String), failure(error:String)
+    
+    static  func handleResults(results:[Result]){
+        for result in results {
+            switch result{
+            case .failure(let error):
+                print("This is an error \(error)")
+            case .success(let value):
+                print("This is success: \(value)")
+            }
+        }
+        
+    }
+}
 class Enumeration:Test, Testable{
     static func appendTests() {
         tests.append(test1)
@@ -154,6 +201,8 @@ class Enumeration:Test, Testable{
         tests.append(test3)
         tests.append(test4)
         tests.append(test5)
+        tests.append(test6)
+        tests.append(test7)
     }
     
     static func runTests() {
@@ -187,5 +236,16 @@ class Enumeration:Test, Testable{
     static func test5(){
          Vehicle.bike(type: "Hero honda").typeOfVehicle()
     }
-    
+    static func test6(){
+        result(response: APIResponse.failure(error: "{message:500}"))
+        result(response: APIResponse.success(data: Data()))
+    }
+    static func test7(){
+        Result.handleResults(results: [Result.failure(error: "302"),
+                              Result.failure(error: "305"),
+                              Result.success(value: "Success 202"),
+                              Result.failure(error: "invalid input"),
+                              Result.success(value: "success: user created"),
+                              Result.failure(error: "Failure: Invalid id")])
+    }
 }
