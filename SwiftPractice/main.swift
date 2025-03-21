@@ -16,4 +16,4 @@ https://www.dhiwise.com/en-in/post/swift-async-await-vs-gcd-which-one-should-you
 
 //ARC.runTests()
 //Enumeration.runTests()
-UrlSessionTest.runTests()
+UrlSessionWithDispatch.runTests()
