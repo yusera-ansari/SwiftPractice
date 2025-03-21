@@ -12,7 +12,8 @@ class UrlSessionWithDispatch:Test, Testable{
     static func appendTests() {
         createTopic(for: "URLseesion tests")
 //        tests.append(test1)
-        tests.append(test2)
+//        tests.append(test2)
+        tests.append(test3)
                
     }
     
@@ -122,7 +123,86 @@ class UrlSessionWithDispatch:Test, Testable{
             }
             session.resume()
         }
+     
+    }
+    
+    
+    //test3
+    
+    enum RequestType{
+        case postsUrl, usersUrl, commentsUrl
+    }
+    func makeAPICall(url:URL, for request: RequestType, with dispatchGroup:DispatchGroup, complete: @escaping (String)->() ){
+        URLSession.shared.dataTask(with: url) {
+            data, response, error   in
+            defer{
+                dispatchGroup.leave()
+            }
+            do{
+                if let error = error{
+                    throw APIError.requestFailed(error: "\(request)  failed with error: \(error.localizedDescription)")
+                    
+                }
+                
+                guard let response = response as? HTTPURLResponse,
+                      (200...299).contains(response.statusCode) else{
+                    throw APIError.invalidResponse(response: " \(request) failed: the response is invalid \(response) response code:  ")
+                      
+                }
+                guard let data = data, let string = String(data: data, encoding: .utf8) else{
+                    throw APIError.invalidData(error: "\(request) failed Invalid data: \(data)")
+                }
+//                print(string)
+                complete(string)
+                
+            }catch{
+                
+            }
+        }.resume()
+    }
+    static func test3()   {
+        /*
+         Problem: Concurrent API Requests
+         Goal: Write a Swift function that fetches data from multiple API endpoints concurrently and combines the results into a single response.
+         */
+        let postsURL = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+           let usersURL = URL(string: "https://jsonplaceholder.typicode.com/users")!
+           let commentsURL = URL(string: "https://jsonplaceholder.typicode.com/comments")!
+           
+        let dispatchGroup = DispatchGroup();
+        var apiResponse = APIResponseData();
+       
+         
+        let urlSessionDispatchObj = UrlSessionWithDispatch();
+        dispatchGroup.enter()
+        urlSessionDispatchObj.makeAPICall(url: postsURL, for: RequestType.postsUrl, with: dispatchGroup){
+            (data) in
+             
+                apiResponse.posts=data
+            
+        }
+        dispatchGroup.enter()
+        
+        urlSessionDispatchObj.makeAPICall(url: usersURL, for: RequestType.usersUrl, with: dispatchGroup){
+            (data) in
+             print("printing......")
+            apiResponse.users=data
+            
+        }
+        dispatchGroup.enter()
+        urlSessionDispatchObj.makeAPICall(url: commentsURL, for: RequestType.commentsUrl, with: dispatchGroup){
+            (data) in
+             
+            apiResponse.comments=data
+            
+        }
+           
+        dispatchGroup.notify(queue: .main ){
+            print(apiResponse)
+        }
+           
         RunLoop.main.run()
+        
     }
     
     
